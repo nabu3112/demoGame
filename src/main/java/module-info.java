@@ -3,10 +3,12 @@ module org.example.myarkanoid {
     requires javafx.fxml;
     requires javafx.graphics;
     requires java.desktop;
+    requires com.almasb.fxgl.all;
 
     opens org.example.myarkanoid to javafx.fxml;
     opens object to javafx.fxml;
 
     exports org.example.myarkanoid;
     exports object;
+    exports InitResource;
 }

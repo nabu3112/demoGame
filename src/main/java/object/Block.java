@@ -5,13 +5,15 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Objects;
+
 public class Block {
     private double X;
     private double Y;
     private double width;
     private double height;
 
-    //Image graphic;
+    Image graphic = new Image(Objects.requireNonNull(MyBlock.class.getResourceAsStream("/Image/Block/block1.png")));
 
     public Block() {
 
@@ -55,14 +57,6 @@ public class Block {
     public void setHeight(double height) {
         this.height = height;
     }
-
-//    public Image getGraphic() {
-//        return graphic;
-//    }
-//
-//    public void setGraphic(Image graphic) {
-//        this.graphic = graphic;
-//    }
 
     public void addOnScene (GraphicsContext gc) {
         //gc.drawImage(graphic, X, Y, width, height);

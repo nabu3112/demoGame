@@ -4,17 +4,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import java.util.Objects;
+
 public class GameBlock extends Block{
     private int typeBlock;
     private int durability;
 
-    public GameBlock(int typeBlock) {
-        this.typeBlock = typeBlock;
-        this.durability = typeBlock;
-    }
-
     public GameBlock(double x, double y, int typeBlock) {
-        super(x, y, 50, 20);
+        super(x, y, 90, 30);
         this.typeBlock = typeBlock;
         this.durability = typeBlock;
     }
@@ -29,16 +26,16 @@ public class GameBlock extends Block{
 
     @Override
     public void addOnScene(GraphicsContext gc) {
-        //gc.drawImage(graphic, X, Y, width, height);
-        if (typeBlock == 1) {
-            gc.setFill(Color.YELLOW);
-        } else {
-            gc.setFill(Color.BLUE);
-        }
-        gc.fillRect(getX(), getY(), getWidth(), getHeight());
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(3);
-        gc.strokeRect(getX(), getY(), getWidth(), getHeight());
+//        if (typeBlock == 1) {
+//            gc.setFill(Color.YELLOW);
+//        } else {
+//            gc.setFill(Color.BLUE);
+//        }
+//        gc.fillRect(getX(), getY(), getWidth(), getHeight());
+//        gc.setStroke(Color.BLACK);
+//        gc.setLineWidth(3);
+//        gc.strokeRect(getX(), getY(), getWidth(), getHeight());
+        gc.drawImage(super.graphic, getX(), getY(), getWidth(), getHeight());
     }
 
     public boolean handleBlock() {

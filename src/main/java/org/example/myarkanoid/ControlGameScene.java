@@ -46,11 +46,11 @@ public class ControlGameScene {
     private void handleMainButtonClick() {
         if (!expanded) {
             showButtons();
-            //scenePlayGame.pauseGame();
+            scenePlayGame.pauseGame();
         } else {
             hideButtons();
             canvas.requestFocus();
-            //scenePlayGame.resumeGame();
+            scenePlayGame.resumeGame();
         }
         expanded = !expanded;
     }

@@ -3,6 +3,8 @@ package object;
 import javafx.scene.image.Image;
 import org.example.myarkanoid.HelloApplication;
 
+import java.util.Objects;
+
 public class MyBlock extends Block {
     private double speed;
 
