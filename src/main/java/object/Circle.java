@@ -11,6 +11,7 @@ public abstract class Circle {
     private double speed;
     private double dx;
     private double dy;
+    private boolean isInScreen;
 
     public Circle(double ballX, double ballY, double radius, double speed, double dx, double dy) {
         this.ballX = ballX;
@@ -19,6 +20,7 @@ public abstract class Circle {
         this.speed = speed;
         this.dx = dx;
         this.dy = dy;
+        this.isInScreen = true;
     }
 
     public double getBallX() {
@@ -67,6 +69,14 @@ public abstract class Circle {
 
     private void setRadius(double radius) {
         this.radius = radius;
+    }
+
+    public boolean isInScreen() {
+        return isInScreen;
+    }
+
+    public void setInScreen(boolean inScreen) {
+        isInScreen = inScreen;
     }
 
     private double clamp(double value, double min, double max) {

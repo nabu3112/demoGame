@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +37,7 @@ public class ScenePlayGame {
     }
 
     private void initObject() {
-        myBlock = new MyBlock(70, 70, 4);
+        myBlock = new MyBlock(70, 10, 4);
         mainCharacter = new Character();
         map = new Map(mainCharacter.getxOnMap(), mainCharacter.getyOnMap(), mainCharacter.getSize());
         listBlocks = new ManageGameBlock();
@@ -44,8 +45,15 @@ public class ScenePlayGame {
         listBuffs = new ManageBuff();
     }
 
+    private void resetObject() {
+        myBlock.resetMyBlock();
+        listBlocks.resetGameBlock(level);
+        listBalls.resetBall(myBlock.getX(), myBlock.getY(), myBlock.getWidth());
+        listBuffs.resetBuff();
+    }
+
     private void startLevel(GraphicsContext gc, Canvas canvas) {
-        listBlocks.updateList(level);
+        listBlocks.resetGameBlock(level);
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -54,10 +62,13 @@ public class ScenePlayGame {
                         updateInGame();
                         renderInGame(gc, canvas);
                         if (listBlocks.getNumberBlock() == 0) {
-                            gameLoop.stop();
-                            //level++;
                             isIngame = false;
-                            startLevel(gc, canvas);
+                            level ++;
+                            resetObject();
+                        }
+                        if (listBalls.getNumOfBalls() == 0) {
+                            isIngame = false;
+                            resetObject();
                         }
                     } else {
                         updateInLoppy();
@@ -144,8 +155,7 @@ public class ScenePlayGame {
         myBlock.addOnScene(gc);
         listBlocks.addListOnScene(gc);
         listBalls.addListOnScene(gc, myBlock, listBlocks.getGameBlocks(), listBuffs);
-        listBuffs.addBuffOnScene(gc, myBlock.getX(), myBlock.getY(),
-                myBlock.getWidth(), myBlock.getHeight(), listBalls);
+        listBuffs.addBuffOnScene(gc, myBlock, listBalls);
     }
 
     private void renderInLoppy(GraphicsContext gc, Canvas canvas) {

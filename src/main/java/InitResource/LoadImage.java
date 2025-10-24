@@ -17,6 +17,8 @@ public class LoadImage {
 
     private static Image map1;
 
+    private static Image paddle;
+
     public static Image[] getIdleAhead() {
         return idleAhead;
     }
@@ -53,6 +55,10 @@ public class LoadImage {
         return map1;
     }
 
+    public static Image getPaddle() {
+        return paddle;
+    }
+
     private static Image[] loadCharFrame(String format, int numOfFrame) {
         Image[] frames = new Image[numOfFrame];
         for (int i = 0; i < numOfFrame; i++) {
@@ -77,5 +83,6 @@ public class LoadImage {
     public static void loadAllImage() {
         loadCharImage();
         map1 = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Map/Map1.png")));
+        paddle = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Block/paddle_1.png")));
     }
 }

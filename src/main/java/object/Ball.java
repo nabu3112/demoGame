@@ -8,10 +8,10 @@ import java.awt.*;
 import java.util.List;
 
 public class Ball extends Circle {
+    boolean isthrough = false;
 
-
-    public Ball(double xMyBlock, double yMyBlock, double widthMyBlock, double radius, double speed, double dx, double dy) {
-        super(xMyBlock + widthMyBlock / 2, yMyBlock - radius - 1, radius, speed, dx, dy);
+    public Ball(double ballX, double ballY, double radius, double speed, double dx, double dy) {
+        super(ballX, ballY, radius, speed, dx, dy);
     }
 
     public void setDirection() {
@@ -19,6 +19,14 @@ public class Ball extends Circle {
         if (length == 0) return;
         setDx((getDx() / length) * getSpeed());
         setDy((getDy() / length) * getSpeed());
+    }
+
+    public boolean isIsthrough() {
+        return isthrough;
+    }
+
+    public void setIsthrough(boolean isthrough) {
+        this.isthrough = isthrough;
     }
 
     public void updateBall(MyBlock myBlock, List<GameBlock> blocks, ManageBuff listBuffs) {
@@ -62,13 +70,20 @@ public class Ball extends Circle {
         if (collidedBlock != null) {
             collidedBlock.contactGameBlock(this);
             if (collidedBlock.handleBlock()) {
-                System.out.println(1);
                 listBuffs.addBuff(collidedBlock.getX(), collidedBlock.getY(),
-                        collidedBlock.getWidth(), collidedBlock.getHeight(), "Add 3 balls");
+                        collidedBlock.getWidth(), collidedBlock.getHeight(), "Add 3 balls", this);
                 blocks.remove(collidedBlock);
             }
         }
 
         setDirection();
+    }
+
+    public boolean checkOutScreen() {
+        if ((getBallY() - getRadius()) > HelloApplication.HEIGHT) {
+            setInScreen(false);
+            return true;
+        }
+        return false;
     }
 }
