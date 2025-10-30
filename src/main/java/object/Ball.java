@@ -82,6 +82,7 @@ public class Ball extends Circle {
         setDirection();
     }
 
+    //Thêm hàm này.
     public void inPaddle(double xPaddle, double widthPaddle) {
         setDirection();
         if (this.relativeX == -1) {

@@ -28,12 +28,12 @@ public class ScenePlayGame {
     private ManageBuff listBuffs;
     private Character mainCharacter;
     private Map map;
-
-    private Ball aimingBall;
     private Arrow aimingArrow;
-    private boolean isAiming = true;
-    private boolean isBuffBullet = false;
-    private int existingCoins;
+
+    private Ball aimingBall;             //Thêm Ball ngắm bắn.
+    private boolean isAiming = true;     //Biến xác nhận ngắm bắn.
+    private boolean isBuffBullet = false;//Biến ngắm bắn lúc có buff.
+    private int existingCoins;           //Thêm thuộc tính xu.
 
     public void runGame(Canvas canvas) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -47,6 +47,7 @@ public class ScenePlayGame {
         startLevel(gc, canvas);
     }
 
+    //Thêm khởi tạo ball, level, xu.
     private void initObject() {
         paddle = new Paddle(70, 10, 4);
         mainCharacter = new Character();
@@ -62,6 +63,7 @@ public class ScenePlayGame {
         existingCoins = ReadWriteData.getExistingCoins();
     }
 
+    //Thêm reset.
     public void resetObject() {
         paddle.resetMyBlock();
         listBlocks.resetGameBlock(level);
@@ -107,6 +109,7 @@ public class ScenePlayGame {
         gameLoop.start();
     }
 
+    //Thêm xử lí ngắm bắn.
     private void updateInGame() {
 
         // --- Logic chung (Luôn chạy) ---
@@ -207,6 +210,7 @@ public class ScenePlayGame {
         running = true;
     }
 
+    //Thêm render.
     private void renderInGame(GraphicsContext gc, Canvas canvas) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(Color.PEACHPUFF);
@@ -214,6 +218,7 @@ public class ScenePlayGame {
         paddle.addOnScene(gc);
         listBlocks.addListOnScene(gc);
         listBalls.addListOnScene(gc, paddle, listBlocks.getGameBlocks(), listBuffs);
+        //Bỏ dòng cuối thay bằng đoạn này.
         Boolean b = listBuffs.addBuffOnScene(gc, paddle, listBalls);
         if (!isBuffBullet) {
             isBuffBullet = b;

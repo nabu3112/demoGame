@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ManageBuff {
     private List<Buff> buffs;
-    public static int extraCoins = 0;
+    public static int extraCoins = 0;     //Thêm đặc tính
 
     public ManageBuff() {
         buffs = new ArrayList<>();
@@ -29,11 +29,13 @@ public class ManageBuff {
                 bufftype, ballCreateBuff));
     }
 
+    //Thêm reset xu
     public void resetBuff() {
         buffs.clear();
         extraCoins = 0;
     }
 
+    //Đổi thành cái này
     public boolean addBuffOnScene(GraphicsContext gc, Paddle paddle, ManageBall manageBall) {
         boolean bulletActivated = false;
         for (int i = buffs.size() - 1; i >= 0; i--) {

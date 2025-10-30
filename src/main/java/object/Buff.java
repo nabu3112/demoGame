@@ -26,6 +26,7 @@ public class Buff extends Circle{
         bullet =LoadImage.getBullet();
     }
 
+    //Đổi thành cái này
     public String updateBuff (Paddle paddle, ManageBall manageBall) {
         setBallX(getBallX() + getDx());
         setBallY(getBallY() + getDy());
