@@ -1,83 +1,153 @@
 package org.example.myarkanoid;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
-import javafx.event.ActionEvent;
+import object.ScenePlayGame;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import object.ScenePlayGame;
+import javafx.scene.input.KeyCode;
+import javafx.scene.effect.GaussianBlur;
 
 public class ControlGameScene {
     ScenePlayGame scenePlayGame;
 
     @FXML private Canvas canvas;
-    @FXML private Button mainButton;
-    @FXML private Button btn1;
-    @FXML private Button btn2;
+    @FXML private VBox pauseMenu;  // thêm fx:id="pauseMenu" trong FXML
+    @FXML private Label textMenu;
 
-    private boolean expanded = false;
+    private boolean isPaused = false;
 
     @FXML
     private void initialize() {
         scenePlayGame = new ScenePlayGame();
         scenePlayGame.runGame(canvas);
+
+        // Ẩn menu pause khi bắt đầu
+        pauseMenu.setVisible(false);
+        textMenu.setVisible(false);
+
+        // Dùng addEventHandler thay vì setOnKeyPressed
+        canvas.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.P) {
+                togglePause();
+                event.consume(); // tránh trôi phím vào ScenePlayGame
+            }
+        });
+
+        ResumeButton.setOnAction(e -> resumeGame());
+        RestartButton.setOnAction(e -> restartGame());
+        QuitButton.setOnAction(e -> {
+            if (scenePlayGame != null && scenePlayGame.isInArkanoid()) {
+                quitGameArkanoid(); // nếu đang trong game bắn bóng
+            } else {
+                quitGameRPG(); // nếu đang ở màn RPG
+            }
+        });
+
+        addHoverEffect(ResumeButton);
+        addHoverEffect(RestartButton);
+        addHoverEffect(QuitButton);
     }
 
+    private void togglePause() {
+        isPaused = !isPaused;
+        pauseMenu.setVisible(isPaused);
+        textMenu.setVisible(isPaused);
+
+        if (isPaused) {
+            scenePlayGame.pause();
+            canvas.setEffect(new GaussianBlur(10));
+        } else {
+            scenePlayGame.resume();
+            canvas.setEffect(null);
+        }
+    }
+
+
     @FXML
-    public void backToMenu(ActionEvent event) {
+    private Button QuitButton;
+
+    @FXML
+    private Button RestartButton;
+
+    @FXML
+    private Button ResumeButton;
+
+    // Hàm xử lý khi ấn nút "Resume Game"
+    private void resumeGame() {
+        isPaused = false;
+        pauseMenu.setVisible(false);
+        textMenu.setVisible(false);
+
+        scenePlayGame.resume();
+        canvas.setEffect(null);
+        canvas.requestFocus();
+    }
+
+    private void quitGameArkanoid() {
+        scenePlayGame.resetObject();
+        isPaused = false;
+        pauseMenu.setVisible(false);
+        textMenu.setVisible(false);
+
+        scenePlayGame.quitToMainGame(); // quay lại màn RPG
+        canvas.setEffect(null);         // <---- Tắt hiệu ứng mờ
+        canvas.requestFocus();          // lấy lại điều khiển nhân vật
+    }
+
+
+    // Hàm xử lý khi ấn nút "Quit Game" game RPG
+    private void quitGameRPG() {
         try {
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/MyArkanoid/hello-view.fxml"));
-            Scene menuScene = new Scene(loader.load(), HelloApplication.WIDTH, HelloApplication.HEIGHT);
-            stage.setScene(menuScene);
-            stage.setTitle("My Game");
+            scenePlayGame.saveData();
+            Stage stage = (Stage) QuitButton.getScene().getWindow();
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/org/example/myarkanoid/hello-view.fxml"));
+            javafx.scene.Parent root = loader.load();
+            stage.getScene().setRoot(root); // chuyển về menu
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @FXML
-    private void handleMainButtonClick() {
-        if (!expanded) {
-            showButtons();
-            scenePlayGame.pauseGame();
-        } else {
-            hideButtons();
-            canvas.requestFocus();
-            scenePlayGame.resumeGame();
+    private void restartGame() {
+        isPaused = false;
+        pauseMenu.setVisible(false);
+        textMenu.setVisible(false);
+        canvas.setEffect(null);
+
+        if (scenePlayGame != null) {
+            if (scenePlayGame.isIngame()) {
+                scenePlayGame.restartArkanoid(canvas);
+            } else {
+                scenePlayGame.restartRPG(canvas);
+            }
         }
-        expanded = !expanded;
+
+        canvas.requestFocus();
     }
 
-    private void showButtons() {
-        animateButton(btn1, 30, true);
-        animateButton(btn2, 60, true);
-    }
+    private void addHoverEffect(Button button) {
+        DropShadow glow = new DropShadow();
+        glow.setColor(Color.WHITE);
+        glow.setRadius(20);
 
-    private void hideButtons() {
-        animateButton(btn1, 0, false);
-        animateButton(btn2, 0, false);
-    }
+        button.setOnMouseEntered(e -> {
+            button.setEffect(glow);
+            button.setTextFill(Color.WHITE);
+            button.setScaleX(1.05);
+            button.setScaleY(1.05);
+        });
 
-    private void animateButton(Button btn, double translateY, boolean visible) {
-        TranslateTransition move = new TranslateTransition(Duration.millis(250), btn);
-        move.setToY(translateY);
-
-        FadeTransition fade = new FadeTransition(Duration.millis(250), btn);
-        fade.setToValue(visible ? 1 : 0);
-
-        ParallelTransition pt = new ParallelTransition(move, fade);
-
-        // Đảm bảo ẩn hẳn khỏi layout khi xong animation
-        pt.setOnFinished(e -> btn.setVisible(visible));
-
-        btn.setVisible(true); // cần bật lại nếu đang ẩn
-        pt.play();
+        button.setOnMouseExited(e -> {
+            button.setEffect(null);
+            button.setTextFill(Color.WHITE);
+            button.setScaleX(1.0);
+            button.setScaleY(1.0);
+        });
     }
 }

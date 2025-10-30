@@ -19,6 +19,10 @@ public class LoadImage {
 
     private static Image paddle;
 
+    private static Image[] coin;
+    private static Image increasePaddle;
+    private static Image bullet;
+
     public static Image[] getIdleAhead() {
         return idleAhead;
     }
@@ -59,6 +63,18 @@ public class LoadImage {
         return paddle;
     }
 
+    public static Image[] getCoin() {
+        return coin;
+    }
+
+    public static Image getIncreasePaddle() {
+        return increasePaddle;
+    }
+
+    public static Image getBullet() {
+        return bullet;
+    }
+
     private static Image[] loadCharFrame(String format, int numOfFrame) {
         Image[] frames = new Image[numOfFrame];
         for (int i = 0; i < numOfFrame; i++) {
@@ -80,9 +96,16 @@ public class LoadImage {
         runRight = loadCharFrame("/Image/MainChar/RunState/right/run_right_%d.png", 8);
     }
 
-    public static void loadAllImage() {
+    private static void loadBallImage() {
+        coin = loadCharFrame("/Image/Ball/coin_%d.png", 6);
+        increasePaddle = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Ball/increase_paddle.png")));
+        bullet = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Ball/bullet.png")));
+    }
+
+    static {
         loadCharImage();
         map1 = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Map/Map1.png")));
-        paddle = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Block/paddle_1.png")));
+        paddle = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Block/paddle_2.png")));
+        loadBallImage();
     }
 }

@@ -93,6 +93,15 @@ public abstract class Circle {
         return (dx * dx + dy * dy) <= (radius * radius);
     }
 
+    public boolean checkOutScreen() {
+        if ((getBallY() - getRadius()) > HelloApplication.HEIGHT) {
+            setInScreen(false);
+            System.out.println("mat tiu");
+            return true;
+        }
+        return false;
+    }
+
     public void addOnScene(GraphicsContext gc) {
         gc.setFill(Color.ORANGE);
         gc.fillOval(ballX - radius, ballY - radius, radius * 2, radius * 2);

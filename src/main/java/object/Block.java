@@ -2,8 +2,8 @@ package object;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 import java.util.Objects;
 
@@ -13,8 +13,7 @@ public class Block {
     private double width;
     private double height;
 
-    Image graphic = new Image(Objects.requireNonNull(MyBlock.class.getResourceAsStream("/Image/Block/block1.png")));
-
+    Image graphic = new Image(Objects.requireNonNull(Paddle.class.getResourceAsStream("/Image/Block/block1.png")));
     public Block() {
 
     }
