@@ -4,6 +4,7 @@ module org.example.myarkanoid {
     requires javafx.graphics;
     requires java.desktop;
     requires com.almasb.fxgl.all;
+    requires annotations;
 
     opens org.example.myarkanoid to javafx.fxml;
     opens object to javafx.fxml;

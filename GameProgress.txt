@@ -1,2 +1,2 @@
-Level: 2
-ExistingCoins: 2
+Level: 3
+ExistingCoins: 52

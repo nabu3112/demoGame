@@ -41,9 +41,13 @@ public class ManageBall {
     //Buff bóng phân thân.
     public void buffCloneBall(Ball ballCreateBuff) {
         if (ballCreateBuff.isInScreen()) {
+            double newDx = (ballCreateBuff.getDx() - ballCreateBuff.getDy()) * Math.sqrt(2) / 2.0;
+            double newDy = (ballCreateBuff.getDx() + ballCreateBuff.getDy()) * Math.sqrt(2) / 2.0;
+            ballCreateBuff.setDx(newDx);
+            ballCreateBuff.setDy(newDy);
             balls.add(new Ball(ballCreateBuff.getBallX(), ballCreateBuff.getBallY(),
                     ballCreateBuff.getRadius(), ballCreateBuff.getSpeed(),
-                    - ballCreateBuff.getDx(), -ballCreateBuff.getDy()));
+                    newDy, -newDx));
         }
     }
 
@@ -62,9 +66,9 @@ public class ManageBall {
     }
 
     public void addListOnScene(GraphicsContext gc, Paddle paddle,
-                               List<GameBlock> blocks, ManageBuff listBuffs) {
+                               List<GameBlock> blocks, ManageBuff listBuffs, GameSession gameSession) {
         for (int i = 0; i < balls.size(); i++) {
-            balls.get(i).updateBall(paddle, blocks, listBuffs);
+            balls.get(i).updateBall(paddle, blocks, listBuffs, gameSession);
             balls.get(i).addOnScene(gc);
             if (balls.get(i).checkOutScreen()) {
                 balls.remove(i);

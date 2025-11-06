@@ -17,6 +17,14 @@ public class GameBlock extends Block {
         this.durability = typeBlock;
     }
 
+    public int getTypeBlock() {
+        return typeBlock;
+    }
+
+    public void setTypeBlock(int typeBlock) {
+        this.typeBlock = typeBlock;
+    }
+
     public int getDurability() {
         return durability;
     }
@@ -27,23 +35,7 @@ public class GameBlock extends Block {
 
     @Override
     public void addOnScene(GraphicsContext gc) {
-//        if (typeBlock == 1) {
-//            gc.setFill(Color.YELLOW);
-//        } else {
-//            gc.setFill(Color.BLUE);
-//        }
-//        gc.fillRect(getX(), getY(), getWidth(), getHeight());
-//        gc.setStroke(Color.BLACK);
-//        gc.setLineWidth(3);
-//        gc.strokeRect(getX(), getY(), getWidth(), getHeight());
-//        double pivotX = getX() + getWidth() / 2;
-//        double pivotY = getY() + getHeight() / 2;
-//        gc.save();
-//        gc.translate(pivotX, pivotY);
-//        gc.rotate(45);
-//        gc.translate(-pivotX, -pivotY);
         gc.drawImage(graphic, getX(), getY(), getWidth(), getHeight());
-        //gc.restore();
     }
 
     public boolean handleBlock() {

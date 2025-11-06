@@ -1,5 +1,6 @@
 package org.example.myarkanoid;
 
+import object.GameStats;
 import object.ScenePlayGame;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -105,6 +106,7 @@ public class ControlGameScene {
     private void quitGameRPG() {
         try {
             scenePlayGame.saveData();
+            GameStats.saveStats();
             Stage stage = (Stage) QuitButton.getScene().getWindow();
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/org/example/myarkanoid/hello-view.fxml"));
             javafx.scene.Parent root = loader.load();

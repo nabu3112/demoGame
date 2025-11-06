@@ -21,6 +21,7 @@ public abstract class Circle {
         this.dx = dx;
         this.dy = dy;
         this.isInScreen = true;
+        setDirection();
     }
 
     public double getBallX() {
@@ -77,6 +78,13 @@ public abstract class Circle {
 
     public void setInScreen(boolean inScreen) {
         isInScreen = inScreen;
+    }
+
+    public void setDirection() {
+        double length = Math.sqrt(getDx() * getDx() + getDy() * getDy());
+        if (length == 0) return;
+        setDx((getDx() / length) * getSpeed());
+        setDy((getDy() / length) * getSpeed());
     }
 
     private double clamp(double value, double min, double max) {

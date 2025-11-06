@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.AmbientLight?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.myarkanoid.ControlHomeScene">
+
+    <children>
+        <AmbientLight color="CHARTREUSE" />
+
+        <ImageView fitHeight="600.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../../../Image/background/background.png" />
+            </image>
+        </ImageView>
+
+        <ImageView fitHeight="250.0" fitWidth="500.0" layoutX="150.0" layoutY="50.0" preserveRatio="true">
+            <image>
+                <Image url="@../../../Image/LogoGame/LogoGame.png" />
+            </image>
+        </ImageView>
+
+        <ImageView fitHeight="200.0" fitWidth="300.0" layoutX="250.0" layoutY="120.0" preserveRatio="true">
+            <image>
+                <Image url="@../../../Image/LogoGame/Finn.png" />
+            </image>
+            <effect>
+                <DropShadow />
+            </effect>
+        </ImageView>
+
+        <VBox layoutX="297.0" layoutY="242.0" prefHeight="235.0" prefWidth="206.0" spacing="1">
+            <children>
+                <Button fx:id="StartButton" prefHeight="60.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" text="Start Game" textFill="WHITE">
+                    <font>
+                        <Font name="Papyrus" size="30.0" />
+                    </font>
+                    <effect>
+                        <DropShadow color="BLACK" radius="5.0" />
+                    </effect>
+                </Button>
+
+                <Button fx:id="SettingButton" prefHeight="60.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" text="Setting" textFill="WHITE">
+                    <font>
+                        <Font name="Papyrus" size="30.0" />
+                    </font>
+                    <effect>
+                        <DropShadow color="BLACK" radius="5.0" />
+                    </effect>
+                </Button>
+
+                <Button fx:id="QuitButton" prefHeight="60.0" prefWidth="500.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" text="Quit Game" textFill="WHITE">
+                    <font>
+                        <Font name="Papyrus" size="30.0" />
+                    </font>
+                    <effect>
+                        <DropShadow color="BLACK" radius="5.0" />
+                    </effect>
+                </Button>
+            </children>
+        </VBox>
+    </children>
+
+    <cursor>
+        <Cursor fx:constant="HAND" />
+    </cursor>
+</AnchorPane>

@@ -5,25 +5,25 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.Nullable;
 
 public class Buff extends Circle{
-    private String buffType;
-    private Ball ballCreateBuff;
+    private final String buffType;
+    private final Ball ballCreateBuff;
 
     private int state = 0;
-
-    private final Image[] coin;
-    private final Image increasePaddle;
-    private final Image bullet;
 
     public Buff(double xMyBlock, double yMyBlock, double widthMyBlock, double heightMyBlock,
                 double radius, double speed, double dx, double dy, String buffType, Ball ballCreateBuff) {
         super(xMyBlock + widthMyBlock / 2, yMyBlock + heightMyBlock + radius, radius, speed, dx, dy);
         this.buffType = buffType;
         this.ballCreateBuff = ballCreateBuff;
-        coin = LoadImage.getCoin();
-        increasePaddle = LoadImage.getIncreasePaddle();
-        bullet =LoadImage.getBullet();
+    }
+
+    public Buff(double x, double y, double radius, double speed, double dx, double dy, String buffType) {
+        super(x, y, radius, speed, dx, dy);
+        this.buffType = buffType;
+        this.ballCreateBuff = null;
     }
 
     //Đổi thành cái này
@@ -35,6 +35,7 @@ public class Buff extends Circle{
             if (buffType.equals("Add 3 balls")) {
                 manageBall.addBall(paddle.getX(), paddle.getY(), paddle.getWidth());
             } else if (buffType.equals("Clone Ball")) {
+                assert ballCreateBuff != null;
                 manageBall.buffCloneBall(ballCreateBuff);
             } else if (buffType.equals("Increase Paddle Width")) {
                 paddle.increaseWidth();
@@ -42,6 +43,13 @@ public class Buff extends Circle{
                 return "AIMING";
             } else if (buffType.equals("Coin")) {
                 ManageBuff.extraCoins++;
+            } else if (buffType.equals("Heart")) {
+                paddle.setLife(paddle.getLife() + 1);
+                System.out.println(paddle.getLife());
+            } else if (buffType.equals("Obstacle")) {
+                paddle.setLife(paddle.getLife() - 1);
+                paddle.startBlinkingEffect();
+                System.out.println(paddle.getLife());
             }
             return "HIT";
         }
@@ -54,19 +62,13 @@ public class Buff extends Circle{
             state = 0;
         }
         if (buffType.equals("Coin")) {
-            gc.drawImage(coin[state / 4], getBallX() - getRadius(), getBallY() - getRadius(),
+            gc.drawImage(LoadImage.getCoin()[state / 4], getBallX() - getRadius(), getBallY() - getRadius(),
                     getRadius() * 2, getRadius() * 2);
+        } else if (buffType.equals("Obstacle")) {
+            gc.drawImage(LoadImage.getFireBall()[state / 6], getBallX() - getRadius() * 2 + 1, getBallY() - getRadius() * 2,
+                    getRadius() * 2 * 2, getRadius() * 2 * 2);
         } else {
-            Image currentImage = null;
-            if (buffType.equals("Add 3 ball")) {
-                currentImage = increasePaddle;
-            } else if (buffType.equals("Clone Ball")) {
-                currentImage = increasePaddle;
-            } else if (buffType.equals("Increase Paddle Width")) {
-                currentImage = increasePaddle;
-            } else if (buffType.equals("Bullet")) {
-                currentImage = bullet;
-            }
+            Image currentImage = getImage();
 
             double angleRad = Math.toRadians(state * 15.0);
             double scaleX = Math.cos(angleRad);
@@ -82,5 +84,22 @@ public class Buff extends Circle{
             gc.restore();
         }
         state++;
+    }
+
+    @Nullable
+    private Image getImage() {
+        Image currentImage = null;
+        if (buffType.equals("Add 3 balls")) {
+            currentImage = LoadImage.getAddThreeeBalls();
+        } else if (buffType.equals("Clone Ball")) {
+            currentImage = LoadImage.getCloneBall();
+        } else if (buffType.equals("Increase Paddle Width")) {
+            currentImage = LoadImage.getIncreasePaddle();
+        } else if (buffType.equals("Bullet")) {
+            currentImage = LoadImage.getBullet();
+        } else if (buffType.equals("Heart")) {
+            currentImage = LoadImage.getHeart();
+        }
+        return currentImage;
     }
 }

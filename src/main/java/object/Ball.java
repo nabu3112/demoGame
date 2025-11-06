@@ -4,6 +4,7 @@ import org.example.myarkanoid.HelloApplication;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Random;
 
 public class Ball extends Circle {
     boolean isthrough = false;
@@ -11,13 +12,6 @@ public class Ball extends Circle {
 
     public Ball(double ballX, double ballY, double radius, double speed, double dx, double dy) {
         super(ballX, ballY, radius, speed, dx, dy);
-    }
-
-    public void setDirection() {
-        double length = Math.sqrt(getDx() * getDx() + getDy() * getDy());
-        if (length == 0) return;
-        setDx((getDx() / length) * getSpeed());
-        setDy((getDy() / length) * getSpeed());
     }
 
     public boolean isIsthrough() {
@@ -28,7 +22,7 @@ public class Ball extends Circle {
         this.isthrough = isthrough;
     }
 
-    public void updateBall(Paddle paddle, List<GameBlock> blocks, ManageBuff listBuffs) {
+    public void updateBall(Paddle paddle, List<GameBlock> blocks, ManageBuff listBuffs, GameSession gameSession) {
         setBallX(getBallX() + getDx());
         setBallY(getBallY() + getDy());
 
@@ -73,8 +67,13 @@ public class Ball extends Circle {
                 collidedBlock.contactGameBlock(this);
             }
             if (collidedBlock.handleBlock()) {
-                listBuffs.addBuff(collidedBlock.getX(), collidedBlock.getY(),
-                        collidedBlock.getWidth(), collidedBlock.getHeight(), "Bullet", this);
+                gameSession.addScore(collidedBlock.getTypeBlock());
+                Random rand = new Random();
+                int r = rand.nextInt(1);
+                if (r == 0) {
+                    listBuffs.addBuff(collidedBlock.getX(), collidedBlock.getY(),
+                            collidedBlock.getWidth(), collidedBlock.getHeight(), "Increase Paddle Width", this);
+                }
                 blocks.remove(collidedBlock);
             }
         }

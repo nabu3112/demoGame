@@ -1,9 +1,11 @@
 package object;
 
+import InitResource.LoadImage;
 import InitResource.ReadWriteData;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import org.example.myarkanoid.HelloApplication;
@@ -28,12 +30,19 @@ public class ScenePlayGame {
     private ManageBuff listBuffs;
     private Character mainCharacter;
     private Map map;
-    private Arrow aimingArrow;
+    private GameSession gameSession;
 
     private Ball aimingBall;             //Thêm Ball ngắm bắn.
     private boolean isAiming = true;     //Biến xác nhận ngắm bắn.
     private boolean isBuffBullet = false;//Biến ngắm bắn lúc có buff.
     private int existingCoins;           //Thêm thuộc tính xu.
+
+    private float blockSpawnTimer = 0.0f;
+    private long lastFrameTime = 0;
+    private static final float BLOCK_SPAWN_TIME = 15.0f;
+
+    private Image backGround1 = LoadImage.getBackGround1();
+
 
     public void runGame(Canvas canvas) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -53,14 +62,15 @@ public class ScenePlayGame {
         mainCharacter = new Character();
         map = new Map(mainCharacter.getxOnMap(), mainCharacter.getyOnMap(), mainCharacter.getSize());
         listBlocks = new ManageGameBlock();
+
         listBalls = new ManageBall();
         listBuffs = new ManageBuff();
-        aimingArrow = new Arrow(paddle.getX() + paddle.getWidth() / 2, paddle.getY(),
-                50, -80, 80, 150);
         aimingBall = new Ball(paddle.getX() + paddle.getWidth() / 2, paddle.getY() - 6, 6, 1, 1, 0);
 
         level = ReadWriteData.getLevel();
         existingCoins = ReadWriteData.getExistingCoins();
+        gameSession = new GameSession();
+        listBlocks.resetGameBlock(level);
     }
 
     //Thêm reset.
@@ -71,6 +81,13 @@ public class ScenePlayGame {
         listBuffs.resetBuff();
         isAiming = true;
         isBuffBullet = false;
+        blockSpawnTimer = 0.0f;
+
+        // FIX 1: Reset lastFrameTime để deltaTime được tính lại
+        lastFrameTime = 0;
+
+        // Reset luôn cả GameSession
+        gameSession.reset();
         System.out.println("xu hien co: " + existingCoins);
     }
 
@@ -81,21 +98,41 @@ public class ScenePlayGame {
     }
 
     private void startLevel(GraphicsContext gc, Canvas canvas) {
-        listBlocks.resetGameBlock(level);
+        //listBlocks.resetGameBlock(level);
+        lastFrameTime = 0;
+
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if (lastFrameTime == 0) {
+                    lastFrameTime = now;
+                    return; // Bỏ qua frame này
+                }
+
+                // 2. Tính deltaTime (bằng GIÂY)
+                float deltaTime = (now - lastFrameTime) / 1_000_000_000.0f;
+
+                // 3. Cập nhật lastFrameTime cho frame tiếp theo
+                lastFrameTime = now;
                 if (running) {
                     if (isIngame) {
-                        updateInGame();
+                        updateInGame(deltaTime);
                         renderInGame(gc, canvas);
                         if (listBlocks.getNumberBlock() == 0) {
-                            isIngame = false;
-                            level ++;
-                            existingCoins += ManageBuff.extraCoins;
-                            resetObject();
+                            if (level <= 3) {
+                                isIngame = false;
+                                level++;
+                                existingCoins += ManageBuff.extraCoins;
+                                resetObject();
+                            } else {
+                                blockSpawnTimer = BLOCK_SPAWN_TIME;
+                            }
                         }
-                        if (listBalls.getNumOfBalls() == 0 && !isAiming) {
+                        if ((listBalls.getNumOfBalls() == 0 && !isAiming) || paddle.getLife() <= 0) {
+                            if (level >= 4) {
+                                existingCoins += ManageBuff.extraCoins;
+                                GameStats.addGameSession(gameSession);
+                            }
                             isIngame = false;
                             resetObject();
                         }
@@ -110,9 +147,15 @@ public class ScenePlayGame {
     }
 
     //Thêm xử lí ngắm bắn.
-    private void updateInGame() {
+    private void updateInGame(float deltaTime) {
+        if (!isAiming) {
+            if (level >= 4) {
+                gameSession.update(deltaTime);
+                blockSpawnTimer += deltaTime;
+            }
+            listBuffs.setTimeCreateObstacle(paddle.getX(), paddle.getWidth(), level, deltaTime);
+        }
 
-        // --- Logic chung (Luôn chạy) ---
         if (pressedKeys.contains(KeyCode.LEFT)) {
             paddle.setX(paddle.getX() - paddle.getSpeed());
         }
@@ -121,32 +164,28 @@ public class ScenePlayGame {
         }
         paddle.collisionHandling();
 
-        // --- Logic theo trạng thái ---
         if (isAiming || isBuffBullet) {
-
-//            double paddleCenterX = myBlock.getX() + myBlock.getWidth() / 2;
-//            double paddleTopY = myBlock.getY();
-//
-//            aimingArrow.setPosition(paddleCenterX, paddleTopY);
-//            aimingArrow.update(0.016);
             aimingBall.inPaddle(paddle.getX(), paddle.getWidth());
-
-
             if (pressedKeys.contains(KeyCode.SPACE)) {
                 if (isAiming) {
-//                    listBalls.addNewBall(myBlock.getX(), myBlock.getY(), myBlock.getWidth(),
-//                            Math.sin(aimingArrow.getAngleInRadians()), - Math.cos(aimingArrow.getAngleInRadians()));
                     listBalls.addNewBall(aimingBall.getBallX(), aimingBall.getBallY());
                     isAiming = false;
                 }
                 if (isBuffBullet) {
-//                    listBalls.buffBullet(myBlock.getX(), myBlock.getY(), myBlock.getWidth(),
-//                            Math.sin(aimingArrow.getAngleInRadians()), - Math.cos(aimingArrow.getAngleInRadians()));
                     listBalls.buffBullet(aimingBall.getBallX(), aimingBall.getBallY());
                     isBuffBullet = false;
                 }
-
             }
+        }
+        if (blockSpawnTimer >= BLOCK_SPAWN_TIME) {
+            listBlocks.addBlock();
+            blockSpawnTimer = 0.0f;
+        }
+        if (listBlocks.getStateAboutToLose() == 4) {
+            existingCoins += ManageBuff.extraCoins;
+            GameStats.addGameSession(gameSession);
+            isIngame = false;
+            resetObject();
         }
     }
 
@@ -213,19 +252,26 @@ public class ScenePlayGame {
     //Thêm render.
     private void renderInGame(GraphicsContext gc, Canvas canvas) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setFill(Color.PEACHPUFF);
-        gc.fillRect(0, 0, HelloApplication.WIDTH, 65);
+        gc.drawImage(backGround1, 0, 0, canvas.getWidth(), canvas.getHeight());
+        for (int i = 1; i <= paddle.getLife(); i++) {
+            gc.drawImage(LoadImage.getHeart(), 10 + (i - 1) * 25, 570, 20, 20);
+        }
         paddle.addOnScene(gc);
-        listBlocks.addListOnScene(gc);
-        listBalls.addListOnScene(gc, paddle, listBlocks.getGameBlocks(), listBuffs);
-        //Bỏ dòng cuối thay bằng đoạn này.
-        Boolean b = listBuffs.addBuffOnScene(gc, paddle, listBalls);
+        listBlocks.addListOnScene(gc, level);
+        listBalls.addListOnScene(gc, paddle, listBlocks.getGameBlocks(), listBuffs, gameSession);
+        boolean b = listBuffs.addBuffOnScene(gc, paddle, listBalls);
         if (!isBuffBullet) {
             isBuffBullet = b;
         }
         if (isAiming || isBuffBullet) {
-            //aimingArrow.draw(gc);
             aimingBall.addOnScene(gc);
+        }
+        gc.drawImage(backGround1, 0, 0, backGround1.getWidth(), backGround1.getHeight() * 65 / 600,
+                0, 0, 800, 65);
+        gc.setFill(Color.color(0, 0, 0, 0.5));
+        gc.fillRect(0, 0, HelloApplication.WIDTH, 65);
+        if (level >= 4) {
+            gameSession.renderClock(gc, listBlocks.getStateAboutToLose());
         }
     }
 

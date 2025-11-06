@@ -9,7 +9,8 @@ import java.util.List;
 
 public class ManageBuff {
     private List<Buff> buffs;
-    public static int extraCoins = 0;     //Thêm đặc tính
+    public static int extraCoins = 0;
+    private float timeCreateObstacle = 0f;
 
     public ManageBuff() {
         buffs = new ArrayList<>();
@@ -25,7 +26,7 @@ public class ManageBuff {
 
     public void addBuff(double xBlock, double yBlock, double widthBlock, double heightBlock,
                         String bufftype, Ball ballCreateBuff) {
-        buffs.add(new Buff(xBlock, yBlock, widthBlock, heightBlock,10, 3, 0, 1,
+        buffs.add(new Buff(xBlock, yBlock, widthBlock, heightBlock,10, 1.5, 0, 1,
                 bufftype, ballCreateBuff));
     }
 
@@ -33,6 +34,15 @@ public class ManageBuff {
     public void resetBuff() {
         buffs.clear();
         extraCoins = 0;
+        timeCreateObstacle = 0f;
+    }
+
+    public void setTimeCreateObstacle(double xPaddle, double widthPaddle, int level, float deltaTime) {
+        timeCreateObstacle += deltaTime;
+        if (timeCreateObstacle >= 5.f && level == 3) {
+            buffs.add(new Buff(xPaddle + widthPaddle / 2, 0, 13, 4, 0, 1, "Obstacle"));
+            timeCreateObstacle = 0;
+        }
     }
 
     //Đổi thành cái này

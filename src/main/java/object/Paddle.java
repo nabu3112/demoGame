@@ -12,21 +12,23 @@ import javafx.util.Duration;
 import org.example.myarkanoid.HelloApplication;
 
 public class Paddle extends Block {
+    private int life;
     private double speed;
     private double defaultWidth;
-    private double increasedWidth = 30;
-    private double maxBuffedTime = 5;
-    private Image image;
+    private double increasedWidth;
+    private double maxBuffedTime;
+    private final Image image;
 
     private Timeline currentBuff = null;
-    private Timeline startBlinkingEffect;
-    private Timeline endBlinkingEffect;
-
+    private Timeline currentBlinkingEffect;
     private DoubleProperty opacity = new SimpleDoubleProperty(1.0);
 
     public Paddle(double speed) {
         this.speed = speed;
         this.image = LoadImage.getPaddle();
+        life = 2;
+        increasedWidth = 30;
+        maxBuffedTime = 5;
     }
 
     public Paddle(double width, double height, double speed) {
@@ -34,6 +36,17 @@ public class Paddle extends Block {
         this.defaultWidth = width;
         this.speed = speed;
         this.image = LoadImage.getPaddle();
+        life = 2;
+        increasedWidth = 30;
+        maxBuffedTime = 5;
+    }
+
+    public int getLife() {
+        return life;
+    }
+
+    public void setLife(int life) {
+        this.life = life;
     }
 
     public double getSpeed() {
@@ -44,6 +57,14 @@ public class Paddle extends Block {
         this.speed = speed;
     }
 
+    public double getIncreasedWidth() {
+        return increasedWidth;
+    }
+
+    public void setIncreasedWidth(double increasedWidth) {
+        this.increasedWidth = increasedWidth;
+    }
+
     public void resetMyBlock() {
         setX((HelloApplication.WIDTH - getWidth()) / 2);
         setWidth(defaultWidth);
@@ -52,10 +73,11 @@ public class Paddle extends Block {
             currentBuff.stop();
             currentBuff = null;
         }
+        life = 2;
         setOpacity(1.0);
     }
 
-    public void collisionHandling () {
+    public void collisionHandling() {
         if ((getX() + getWidth()) > HelloApplication.WIDTH) {
             setX(HelloApplication.WIDTH - getWidth());
         } else if ((getX() < 0)) {
@@ -76,39 +98,20 @@ public class Paddle extends Block {
     }
 
     private void stopAllBlinking() {
-        if (startBlinkingEffect != null) {
-            startBlinkingEffect.stop();
-            startBlinkingEffect = null;
-        }
-        if (endBlinkingEffect != null) {
-            endBlinkingEffect.stop();
-            endBlinkingEffect = null;
+        if (currentBlinkingEffect != null) {
+            currentBlinkingEffect.stop();
+            currentBlinkingEffect = null;
         }
         setOpacity(1.0);
     }
-
 
     public void increaseWidth() {
         if (currentBuff != null) {
             currentBuff.stop();
         }
+        playBlinkingEffect(0.3, 6);
 
-        stopAllBlinking();
-
-        startBlinkingEffect = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(opacityProperty(), 1.0)),
-                new KeyFrame(Duration.millis(50), new KeyValue(opacityProperty(), 0.3))
-        );
-        startBlinkingEffect.setCycleCount(6);
-        startBlinkingEffect.setAutoReverse(true);
-        startBlinkingEffect.setOnFinished(e -> {
-            setOpacity(1.0);
-            startBlinkingEffect = null;
-        });
-
-        startBlinkingEffect.play();
-
-        if (currentBuff == null){
+        if (currentBuff == null) {
             setX(getX() - increasedWidth / 2);
             setWidth(defaultWidth + increasedWidth);
         }
@@ -123,27 +126,36 @@ public class Paddle extends Block {
     }
 
     private void triggerEndEffect() {
-        if (startBlinkingEffect != null) {
-            startBlinkingEffect.stop();
-            startBlinkingEffect = null;
-        }
-
         setWidth(defaultWidth);
         setX(getX() + increasedWidth / 2);
 
-        endBlinkingEffect = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(opacityProperty(), 1.0)),
-                new KeyFrame(Duration.millis(50), new KeyValue(opacityProperty(), 0.1))
-        );
-        endBlinkingEffect.setCycleCount(6);
-        endBlinkingEffect.setAutoReverse(true);
+        playBlinkingEffect(0.1, 6);
+    }
 
-        endBlinkingEffect.setOnFinished(e -> {
+    public void startBlinkingEffect() {
+        playBlinkingEffect(0.1, 6);
+    }
+
+    private void playBlinkingEffect(double targetOpacity, int cycles) {
+        // 1. Dừng mọi hiệu ứng cũ
+        stopAllBlinking();
+
+        // 2. Tạo hiệu ứng mới
+        currentBlinkingEffect = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(opacityProperty(), 1.0)),
+                new KeyFrame(Duration.millis(50), new KeyValue(opacityProperty(), targetOpacity))
+        );
+        currentBlinkingEffect.setCycleCount(cycles);
+        currentBlinkingEffect.setAutoReverse(true);
+
+        // 3. Đặt sự kiện khi hoàn thành
+        currentBlinkingEffect.setOnFinished(e -> {
             setOpacity(1.0);
-            endBlinkingEffect = null;
+            currentBlinkingEffect = null; // Xóa tham chiếu khi chạy xong
         });
 
-        endBlinkingEffect.play();
+        // 4. Chạy hiệu ứng
+        currentBlinkingEffect.play();
     }
 
     @Override
