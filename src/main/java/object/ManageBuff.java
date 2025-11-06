@@ -10,7 +10,7 @@ import java.util.List;
 public class ManageBuff {
     private List<Buff> buffs;
     public static int extraCoins = 0;
-    private float timeCreateObstacle = 0f;
+    private float timeCreateObstacle = 0f;         //Thêm khai báo biến này.
 
     public ManageBuff() {
         buffs = new ArrayList<>();
@@ -30,13 +30,14 @@ public class ManageBuff {
                 bufftype, ballCreateBuff));
     }
 
-    //Thêm reset xu
+    //Thêm reset thời gian tạo cầu lửa.
     public void resetBuff() {
         buffs.clear();
         extraCoins = 0;
         timeCreateObstacle = 0f;
     }
 
+    //Thêm hàm kiểm tra thời gian tạo buff, gọi hàm này trong uppdateInGame.
     public void setTimeCreateObstacle(double xPaddle, double widthPaddle, int level, float deltaTime) {
         timeCreateObstacle += deltaTime;
         if (timeCreateObstacle >= 5.f && level == 3) {
@@ -45,7 +46,6 @@ public class ManageBuff {
         }
     }
 
-    //Đổi thành cái này
     public boolean addBuffOnScene(GraphicsContext gc, Paddle paddle, ManageBall manageBall) {
         boolean bulletActivated = false;
         for (int i = buffs.size() - 1; i >= 0; i--) {

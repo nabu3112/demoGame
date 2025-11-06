@@ -20,13 +20,13 @@ public class Buff extends Circle{
         this.ballCreateBuff = ballCreateBuff;
     }
 
+    //Thêm khởi tạo này.
     public Buff(double x, double y, double radius, double speed, double dx, double dy, String buffType) {
         super(x, y, radius, speed, dx, dy);
         this.buffType = buffType;
         this.ballCreateBuff = null;
     }
 
-    //Đổi thành cái này
     public String updateBuff (Paddle paddle, ManageBall manageBall) {
         setBallX(getBallX() + getDx());
         setBallY(getBallY() + getDy());
@@ -43,7 +43,7 @@ public class Buff extends Circle{
                 return "AIMING";
             } else if (buffType.equals("Coin")) {
                 ManageBuff.extraCoins++;
-            } else if (buffType.equals("Heart")) {
+            } else if (buffType.equals("Heart")) {            //Thêm 2 điều kiện ở dưới.
                 paddle.setLife(paddle.getLife() + 1);
                 System.out.println(paddle.getLife());
             } else if (buffType.equals("Obstacle")) {
@@ -56,6 +56,7 @@ public class Buff extends Circle{
         return "NOHIT";
     }
 
+    //Thay addOnScene bằng thằng này. Kéo xuống hết.
     @Override
     public void addOnScene(GraphicsContext gc) {
         if (state > 23) {

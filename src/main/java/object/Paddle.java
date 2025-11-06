@@ -17,15 +17,16 @@ public class Paddle extends Block {
     private double defaultWidth;
     private double increasedWidth;
     private double maxBuffedTime;
-    private final Image image;
 
     private Timeline currentBuff = null;
+    //thêm 3 biến này
     private Timeline currentBlinkingEffect;
     private DoubleProperty opacity = new SimpleDoubleProperty(1.0);
+    private final Image image;
 
     public Paddle(double speed) {
         this.speed = speed;
-        this.image = LoadImage.getPaddle();
+        this.image = LoadImage.getPaddle();   //Thêm dòng này.
         life = 2;
         increasedWidth = 30;
         maxBuffedTime = 5;
@@ -65,6 +66,7 @@ public class Paddle extends Block {
         this.increasedWidth = increasedWidth;
     }
 
+    //Thay hàm resetMyBlock.
     public void resetMyBlock() {
         setX((HelloApplication.WIDTH - getWidth()) / 2);
         setWidth(defaultWidth);
@@ -85,6 +87,7 @@ public class Paddle extends Block {
         }
     }
 
+    //Thêm từ đoạn này
     public double getOpacity() {
         return opacity.get();
     }
@@ -164,4 +167,5 @@ public class Paddle extends Block {
         gc.drawImage(image, getX(), getY(), getWidth(), getHeight());
         gc.setGlobalAlpha(1.0);
     }
+    //Đến hết đây.
 }

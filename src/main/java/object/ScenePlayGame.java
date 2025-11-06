@@ -153,7 +153,7 @@ public class ScenePlayGame {
                 gameSession.update(deltaTime);
                 blockSpawnTimer += deltaTime;
             }
-            listBuffs.setTimeCreateObstacle(paddle.getX(), paddle.getWidth(), level, deltaTime);
+            listBuffs.setTimeCreateObstacle(paddle.getX(), paddle.getWidth(), level, deltaTime);  //Thêm dòng này.
         }
 
         if (pressedKeys.contains(KeyCode.LEFT)) {

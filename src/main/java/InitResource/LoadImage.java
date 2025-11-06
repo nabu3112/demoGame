@@ -19,6 +19,7 @@ public class LoadImage {
     private static Image backGround1;
     private static Image[] line;
 
+    //Thêm các dòng dưới bỏ heart.
     private static Image paddle;
 
     private static Image[] coin;
@@ -73,6 +74,7 @@ public class LoadImage {
         return line;
     }
 
+    //Thêm các hèm ở dưới cho đến hàm heart.
     public static Image getPaddle() {
         return paddle;
     }
@@ -127,6 +129,7 @@ public class LoadImage {
     }
 
     private static void loadBallImage() {
+        //thêm các dòng dưới trừ dòng heart.
         coin = loadCharFrame("/Image/Ball/coin_%d.png", 6);
         increasePaddle = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Ball/increase_paddle.png")));
         bullet = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Ball/bullet.png")));
@@ -141,7 +144,8 @@ public class LoadImage {
         map1 = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Map/Map1.png")));
         backGround1 = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/background/background_map1.png")));
         line = loadCharFrame("/Image/background/line_%d.png", 2);
-        paddle = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Block/paddle_2.png")));
+        //thêm dòng này.
+        paddle = new Image(Objects.requireNonNull(LoadImage.class.getResourceAsStream("/Image/Block/paddle.png")));
         loadBallImage();
     }
 }
