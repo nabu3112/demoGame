@@ -1,10 +1,16 @@
-Ball: Thêm hàm xử lí lúc chưa bắn.
-Buff: Đổi hàm updateBuff.
-MangeBuff: + Thêm thuộc tính xu.
-           + Đổi hàm addBuffOnScene.
-           + Thêm reset xu.
-MangeBall: Sửa hàm khởi tạo vào thêm bóng.
-ScenePlayGame: + Khai báo biến xu, boolean, bóng ngắm.
-               + Khởi tạo giá trị, reset.
-               + Sửa hàm xử lí điều khiển paddle.
-               + Sửa hàm render.
+LoadImage:
+- Thêm các biến ảnh của bóng và paddle.
+MyBlock:
+- Khai báo thêm biến.
+- Thay hàm resetMyBlock.
+- Thêm hiệu ứng lấp lánh.
+Circle:
+- Chuyển hàm setDirection trong Ball sang Circle.
+- thêm setDirection vào trong khởi tạo.
+Buff:
+- Thêm khởi tạo nữa.
+- Thêm 2 điều kiện trong updateBuff.
+- Thay hàm render.
+ManagerBuff:
+- Thêm thời gian tạo cầu lửa, thêm reset trong hàm reset.
+- Thêm hàm kiểm tra thời gian tạo cầu lửa, gọi trong updateInGame.
